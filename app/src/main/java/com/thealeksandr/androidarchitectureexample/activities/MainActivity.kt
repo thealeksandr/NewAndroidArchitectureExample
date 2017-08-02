@@ -1,51 +1,76 @@
 package com.thealeksandr.androidarchitectureexample.activities
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.view.View
 
 import com.thealeksandr.androidarchitectureexample.R
-import com.thealeksandr.androidarchitectureexample.adapters.GeoLocationAdapter
-import com.thealeksandr.androidarchitectureexample.application.AAEApplication
-import com.thealeksandr.androidarchitectureexample.database.models.GeoLocation
-import com.thealeksandr.androidarchitectureexample.livedata.LocationLiveData
-import com.thealeksandr.androidarchitectureexample.viewmodels.RoomGeoLocationViewModel
+import com.thealeksandr.androidarchitectureexample.fragments.LiveDataFragment
+import com.thealeksandr.androidarchitectureexample.fragments.ObserverFragment
 
 class MainActivity : LifecycleAppCompatActivity() {
 
-    private var adapter: GeoLocationAdapter? = null
+    private var lifecycleButton: View? = null
+    private var livedataButton: View? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        adapter = GeoLocationAdapter(this)
+        lifecycleButton = findViewById(R.id.lifecycle_button)
+        livedataButton = findViewById(R.id.livedata_button)
 
-        val recyclerView = findViewById(R.id.recycler_view) as RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        askForPermission()
+    }
 
+    private fun init() {
 
-        val locationLiveData = LocationLiveData(this)
-        locationLiveData.observe(this, Observer {
-            l -> Runnable {
-                if (l != null) {
-                    AAEApplication.database?.geoLocationDao()?.insertAll(
-                            GeoLocation(l.latitude, l.longitude, l.time))
-                }
-            }
+        livedataButton?.isEnabled = true
+        lifecycleButton?.isEnabled = true
+
+        lifecycleButton?.setOnClickListener({
+            val fragment = ObserverFragment()
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.container_view, fragment).addToBackStack(null).commit()
         })
 
-        val viewModel = ViewModelProviders.of(this).get(RoomGeoLocationViewModel::class.java)
-        viewModel.getLocations().observe(this, Observer {
-            data -> adapter?.geoLocations = data
+        livedataButton?.setOnClickListener({
+            val fragment = LiveDataFragment()
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.container_view, fragment).addToBackStack(null).commit()
         })
 
     }
 
 
+    private fun askForPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION), 1)
+
+        } else {
+            init()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    init()
+                }
+                return
+            }
+        }
+    }
 
 
 }

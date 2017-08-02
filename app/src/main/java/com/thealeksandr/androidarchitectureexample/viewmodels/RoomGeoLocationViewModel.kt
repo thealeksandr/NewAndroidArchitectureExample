@@ -7,8 +7,8 @@ import com.thealeksandr.androidarchitectureexample.application.AAEApplication
 import com.thealeksandr.androidarchitectureexample.database.models.GeoLocation
 
 /**
- * Created by Aleksandr Nikiforov on 8/1/17.
- */
+* Created by Aleksandr Nikiforov on 8/1/17.
+*/
 class RoomGeoLocationViewModel : ViewModel() {
 
     private var geoLocations: LiveData<List<GeoLocation>>? = null

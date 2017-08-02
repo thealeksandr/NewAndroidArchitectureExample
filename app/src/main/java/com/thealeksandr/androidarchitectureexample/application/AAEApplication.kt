@@ -6,8 +6,8 @@ import android.content.Context
 import com.thealeksandr.androidarchitectureexample.database.AAEDatabase
 
 /**
- * Created by Aleksandr Nikiforov on 8/1/17.
- */
+* Created by Aleksandr Nikiforov on 8/1/17.
+*/
 class AAEApplication : Application() {
 
     override fun onCreate() {
