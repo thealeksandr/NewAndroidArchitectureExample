@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -20,14 +21,15 @@ import com.thealeksandr.androidarchitectureexample.viewmodels.RoomGeoLocationVie
 /**
 * Created by Aleksandr Nikiforov on 8/2/17.
 */
-class LiveDataFragment: LifecycleFragment() {
+class LiveDataFragment: Fragment() {
 
     private var adapter: GeoLocationAdapter? = null
     private var recyclerView: RecyclerView? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.fragment_locations, container, false)
+        val view = inflater.inflate(R.layout.fragment_locations, container, false)
         adapter = GeoLocationAdapter(activity)
 
         recyclerView = view?.findViewById(R.id.recycler_view)
@@ -38,7 +40,7 @@ class LiveDataFragment: LifecycleFragment() {
     }
 
     fun init() {
-        val locationLiveData = LocationLiveData(activity)
+        val locationLiveData = LocationLiveData(context!!)
         locationLiveData.observe(this, Observer {
             l -> AsyncTask.execute {
                 if (l != null) {

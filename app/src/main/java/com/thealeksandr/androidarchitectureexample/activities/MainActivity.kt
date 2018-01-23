@@ -1,17 +1,19 @@
 package com.thealeksandr.androidarchitectureexample.activities
 
 import android.Manifest
+import android.arch.lifecycle.LifecycleActivity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 
 import com.thealeksandr.androidarchitectureexample.R
 import com.thealeksandr.androidarchitectureexample.fragments.LiveDataFragment
 import com.thealeksandr.androidarchitectureexample.fragments.ObserverFragment
 
-class MainActivity : LifecycleAppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private var lifecycleButton: View? = null
     private var livedataButton: View? = null
@@ -28,6 +30,8 @@ class MainActivity : LifecycleAppCompatActivity() {
 
     private fun init() {
 
+
+        lifecycle
         livedataButton?.isEnabled = true
         lifecycleButton?.isEnabled = true
 
